@@ -1,73 +1,53 @@
 #include "lists.h"
-#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
- * reverse_list - to revers a linked list
- * @head: it point to the first node in the list
- * Return: it point to the first node in the new list
- */
-void reverse_list(listint_t **head)
+*add_nodeint - to add a new node at the beginning of a listint_t list
+*@head: the head of listint_t
+*@n: the int to add in listint_t list
+*Return: the address of the new element, or NULL if it failed
+*/
+listint_t *add_nodeint(listint_t **head, const int n)
 {
-	listint_t *prev_node = NULL;
-	listint_t *current_node = *head;
-	listint_t *next_node = NULL;
+	listint_t *new;
 
-	while (current_node)
-	{
-		next_node = current_node->next;
-		current_node->next = prev_node;
-		prev_node = current_node;
-		current_node = next_node;
-	}
-
-	*head = prev_node;
+	new = malloc(sizeof(listint_t));
+	if (new == NULL)
+		return (NULL);
+	new->n = n;
+	new->next = *head;
+	*head = new;
+	return (new);
 }
-
-
 /**
- * is_palindrome - to checks if a singly linked list is a palindrome
- * @head: it Point to the head node
- * Return: 0 if it is not a palindrome, 1 if it is a palindrome
- */
+*is_palindrome - to identify if a syngle linked list is palindrome
+*@head: the head of listint_t
+*Return: 1 if it is palindrome else 0
+*/
 int is_palindrome(listint_t **head)
 {
-	listint_t *fast_node = *head, *slow_node = *head;
-	listint_t *temp_node = *head, *dup_node = NULL;
+	listint_t *head2 = *head;
+	listint_t *aux = NULL, *aux2 = NULL;
 
-	if (*head == NULL || (*head)->next == NULL)
-	{
+	if (*head == NULL || head2->next == NULL)
 		return (1);
-	}
-	while (1)
+	while (head2 != NULL)
 	{
-		fast_node = fast_node->next->next;
-		if (fast_node == NULL)
-		{
-			dup_node = slow_node->next;
-			break;
-		}
-		if (fast_node->next == NULL)
-		{
-			dup_node = slow_node->next->next;
-			break;
-		}
-		slow_node = slow_node->next;
+		add_nodeint(&aux, head2->n);
+		head2 = head2->next;
 	}
-
-	reverse_list(&dup_node);
-
-	while (dup_node && temp_node)
+	aux2 = aux;
+	while (*head != NULL)
 	{
-		if (temp_node->n == dup_node->n)
+		if ((*head)->n != aux2->n)
 		{
-			dup_node = dup_node->next;
-			temp_node = temp_node->next;
-		}
-		else
+			free_listint(aux);
 			return (0);
+		}
+		*head = (*head)->next;
+		aux2 = aux2->next;
 	}
-
-	if (!dup_node)
-		return (1);
-	return (0);
+	free_listint(aux);
+	return (1);
 }
