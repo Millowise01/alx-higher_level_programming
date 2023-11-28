@@ -5,4 +5,4 @@
 class LockedClass:
     """Creates instances of the class LockedClass"""
 
-    __slots__ = ['first_name']
+    __slots__ = ["first_name"]
